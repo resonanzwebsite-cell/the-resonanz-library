@@ -165,7 +165,7 @@ async function handleGoogle() {
           </div>
         </div>
 
-        <div class="rounded-2xl border border-brand-100 bg-white/90 p-6 shadow-[0_2px_8px_rgb(35_27_58_/_0.04),0_24px_60px_rgb(35_27_58_/_0.06)] backdrop-blur-xl sm:p-8">
+        <div class="rounded-2xl border border-brand-100 bg-white/90 p-6 shadow-[0_2px_8px_rgb(15_32_58_/_0.04),0_24px_60px_rgb(15_32_58_/_0.08)] backdrop-blur-xl sm:p-8">
           <div class="mb-6">
             <h2 class="font-serif text-2xl font-semibold text-brand-900 sm:text-3xl">{{ heading }}</h2>
             <p class="mt-1.5 text-sm text-brand-400">{{ subheading }}</p>

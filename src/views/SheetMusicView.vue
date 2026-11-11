@@ -239,8 +239,8 @@ async function remove(item) {
     </div>
 
     <!-- List View -->
-    <div v-else class="bg-white rounded-2xl border border-brand-100 shadow-sm overflow-hidden">
-      <table class="w-full">
+    <div v-else class="bg-white rounded-2xl border border-brand-100 shadow-sm overflow-x-auto">
+      <table class="w-full min-w-[640px]">
         <thead class="bg-brand-50/50 border-b border-brand-100">
           <tr>
             <th class="text-left px-6 py-3 text-xs font-semibold uppercase tracking-wider text-brand-500">Title</th>

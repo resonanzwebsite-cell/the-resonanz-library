@@ -192,9 +192,10 @@ async function remove(video) {
         class="bg-white rounded-2xl border border-brand-100 shadow-sm hover:shadow-lg transition-all group overflow-hidden"
       >
         <!-- Thumbnail placeholder -->
-        <div class="aspect-video bg-gradient-to-br from-slate-800 to-slate-900 relative flex items-center justify-center">
+        <div class="aspect-video bg-gradient-to-br from-brand-900 to-brand-950 relative flex items-center justify-center">
+          <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_75%_20%,rgb(103_232_249_/_0.18),transparent_60%)]" aria-hidden="true" />
           <button
-            class="w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-red-600/90 transition-colors"
+            class="relative w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center group-hover:bg-gold-500/90 transition-colors"
             :aria-label="video.url ? 'Open video' : 'Video preview'"
             @click="openVideo(video)"
           >
@@ -212,14 +213,14 @@ async function remove(video) {
         </div>
         <div class="p-4">
           <div class="flex items-start gap-2">
-            <Youtube class="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
+            <Youtube class="w-4 h-4 text-gold-600 mt-0.5 shrink-0" />
             <div class="flex-1 min-w-0">
               <h3 class="text-sm font-medium text-brand-900 leading-snug line-clamp-2">{{ video.title }}</h3>
               <p class="text-xs text-brand-400 mt-1">{{ video.channel }}</p>
             </div>
           </div>
           <div class="flex items-center gap-2 mt-3">
-            <span class="px-2 py-0.5 bg-red-50 text-red-600 text-[11px] font-medium rounded-full">{{ video.category }}</span>
+            <span class="px-2 py-0.5 bg-gold-50 text-gold-700 text-[11px] font-medium rounded-full">{{ video.category }}</span>
             <span v-if="video.saved" class="px-2 py-0.5 bg-gold-50 text-gold-700 text-[11px] font-medium rounded-full flex items-center gap-1">
               <Clock class="w-3 h-3" /> Bookmarked
             </span>

@@ -46,15 +46,15 @@ const typeIcons = {
 const typeColors = {
   Concert: 'bg-brand-50 text-brand-600 border-brand-100',
   Rehearsal: 'bg-gold-50 text-gold-600 border-gold-100',
-  Learning: 'bg-emerald-50 text-emerald-600 border-emerald-100',
-  Custom: 'bg-violet-50 text-violet-600 border-violet-100'
+  Learning: 'bg-sky-50 text-sky-600 border-sky-100',
+  Custom: 'bg-indigo-50 text-indigo-600 border-indigo-100'
 }
 
 const colorBars = {
   brand: 'bg-brand-500',
   gold: 'bg-gold-500',
-  emerald: 'bg-emerald-500',
-  violet: 'bg-violet-500'
+  emerald: 'bg-sky-500',
+  violet: 'bg-indigo-500'
 }
 
 function openCreate() {
@@ -224,10 +224,10 @@ async function remove(collection) {
         <div>
           <label class="form-label" for="collection-color">Accent color</label>
           <select id="collection-color" v-model="form.color" class="form-input">
-            <option value="brand">Violet</option>
-            <option value="gold">Gold</option>
-            <option value="emerald">Emerald</option>
-            <option value="violet">Lilac</option>
+            <option value="brand">Sapphire Blue</option>
+            <option value="gold">Cyan</option>
+            <option value="emerald">Sky</option>
+            <option value="violet">Indigo</option>
           </select>
         </div>
 
