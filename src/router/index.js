@@ -1,6 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 const routes = [
+  {
+    path: '/login',
+    name: 'auth',
+    component: () => import('@/views/AuthView.vue'),
+    meta: { title: 'Sign In', public: true }
+  },
   {
     path: '/',
     name: 'dashboard',
@@ -36,6 +43,10 @@ const routes = [
     name: 'settings',
     component: () => import('@/views/SettingsView.vue'),
     meta: { title: 'Settings', icon: 'Settings' }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/'
   }
 ]
 
@@ -47,9 +58,22 @@ const router = createRouter({
   }
 })
 
-router.beforeEach((to, from, next) => {
-  document.title = `${to.meta.title} · The Resonanz Library`
-  next()
+router.beforeEach(async (to) => {
+  const auth = useAuthStore()
+  await auth.init()
+
+  document.title = `${to.meta.title ?? 'Library'} — The Resonanz Library`
+
+  if (to.meta.public) {
+    if (auth.isAuthenticated) return { name: 'dashboard' }
+    return true
+  }
+
+  if (!auth.isAuthenticated) {
+    return { name: 'auth', query: { redirect: to.fullPath } }
+  }
+
+  return true
 })
 
 export default router

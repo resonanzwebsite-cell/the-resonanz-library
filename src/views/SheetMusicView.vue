@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useLibraryStore } from '@/stores/library'
-import { Search, Upload, Grid3X3, List, Heart, Filter, ChevronDown, FileMusic } from 'lucide-vue-next'
+import { Search, Upload, Grid3X3, List, Heart, FileMusic } from 'lucide-vue-next'
 import { storeToRefs } from 'pinia'
 
 const store = useLibraryStore()

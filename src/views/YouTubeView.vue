@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useLibraryStore } from '@/stores/library'
-import { Play, Bookmark, BookmarkCheck, Clock, Youtube, Search, ExternalLink } from 'lucide-vue-next'
+import { Play, Bookmark, BookmarkCheck, Clock, Youtube, Search } from 'lucide-vue-next'
 import { storeToRefs } from 'pinia'
 
 const store = useLibraryStore()

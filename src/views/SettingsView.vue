@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { User, Palette, Download, HardDrive, Bell, Shield, ChevronRight } from 'lucide-vue-next'
+import { User, Palette, Download, HardDrive, Shield, ChevronRight } from 'lucide-vue-next'
 
 const activeTab = ref('account')
 

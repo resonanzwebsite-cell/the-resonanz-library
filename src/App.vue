@@ -1,13 +1,25 @@
 <script setup>
-import { ref } from 'vue'
-import { RouterView, useRoute } from 'vue-router'
+import { computed, ref } from 'vue'
+import { RouterView, useRoute, useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import { 
   LayoutDashboard, FileMusic, Youtube, FolderOpen, Users, Settings, 
-  Menu, X, Music, Search, Bell, ChevronDown 
+  Menu, X, Music, Search, Bell, LogOut 
 } from 'lucide-vue-next'
+import { useAuthStore } from '@/stores/auth'
 
 const route = useRoute()
+const router = useRouter()
 const sidebarOpen = ref(false)
+const authStore = useAuthStore()
+const { user, displayName, initials, avatarUrl } = storeToRefs(authStore)
+
+const isAuthPage = computed(() => route.meta.public === true)
+
+async function handleLogout() {
+  await authStore.logout()
+  router.push({ name: 'auth' })
+}
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -24,7 +36,9 @@ function isActive(href) {
 </script>
 
 <template>
-  <div class="min-h-screen bg-surface" @keydown.esc="sidebarOpen = false">
+  <RouterView v-if="isAuthPage" />
+
+  <div v-else class="min-h-screen bg-surface" @keydown.esc="sidebarOpen = false">
     <!-- Mobile sidebar backdrop -->
     <Transition name="sidebar-backdrop">
       <div
@@ -88,14 +102,31 @@ function isActive(href) {
       <!-- Bottom section -->
       <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-brand-100">
         <div class="flex items-center gap-3 px-3 py-2">
-          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-white text-xs font-semibold">
-            AR
+          <img
+            v-if="avatarUrl"
+            :src="avatarUrl"
+            :alt="displayName"
+            class="w-8 h-8 rounded-full object-cover ring-2 ring-white"
+            referrerpolicy="no-referrer"
+          />
+          <div
+            v-else
+            class="w-8 h-8 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-white text-xs font-semibold"
+          >
+            {{ initials }}
           </div>
           <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium text-brand-900 truncate">Alexandra Richter</p>
-            <p class="text-xs text-brand-400">Premium Member</p>
+            <p class="text-sm font-medium text-brand-900 truncate">{{ displayName }}</p>
+            <p class="text-xs text-brand-400 truncate">{{ user?.email }}</p>
           </div>
-          <ChevronDown class="w-4 h-4 text-brand-300" />
+          <button
+            class="rounded-lg p-2 text-brand-400 transition-colors hover:bg-brand-50 hover:text-brand-600"
+            aria-label="Sign out"
+            title="Sign out"
+            @click="handleLogout"
+          >
+            <LogOut class="w-4 h-4" />
+          </button>
         </div>
       </div>
     </aside>
