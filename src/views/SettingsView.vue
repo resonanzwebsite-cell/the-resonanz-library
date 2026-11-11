@@ -1,8 +1,14 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import { User, Palette, Download, HardDrive, Shield, ChevronRight } from 'lucide-vue-next'
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
+const { user, role, isAdmin, displayName, initials, avatarUrl } = storeToRefs(authStore)
 
 const activeTab = ref('account')
+const roleLabel = computed(() => (isAdmin.value ? 'Administrator' : 'Guest Member'))
 
 const tabs = [
   { id: 'account', name: 'Account', icon: User },
@@ -46,26 +52,52 @@ const tabs = [
             <h2 class="font-semibold text-brand-900 text-lg">Account Information</h2>
             <p class="text-sm text-brand-400 mt-1">Your personal details and membership</p>
           </div>
-          <div class="flex items-center gap-5">
-            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-white text-xl font-semibold shadow-lg shadow-gold-500/20">
-              AR
+          <div v-if="user" class="flex items-center gap-5">
+            <img
+              v-if="avatarUrl"
+              :src="avatarUrl"
+              :alt="displayName"
+              class="w-16 h-16 rounded-full object-cover shadow-lg shadow-gold-500/20"
+              referrerpolicy="no-referrer"
+            />
+            <div
+              v-else
+              class="w-16 h-16 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-white text-xl font-semibold shadow-lg shadow-gold-500/20"
+            >
+              {{ initials }}
             </div>
             <div>
-              <p class="font-medium text-brand-900">Alexandra Richter</p>
-              <p class="text-sm text-brand-400">alexandra.richter@email.com</p>
-              <span class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-gold-50 text-gold-700 text-[11px] font-semibold rounded-full">
-                <Shield class="w-3 h-3" /> Premium Member
+              <p class="font-medium text-brand-900">{{ displayName }}</p>
+              <p class="text-sm text-brand-400">{{ user.email }}</p>
+              <span
+                :class="[
+                  'inline-flex items-center gap-1 mt-1 px-2 py-0.5 text-[11px] font-semibold rounded-full',
+                  isAdmin ? 'bg-brand-50 text-brand-700' : 'bg-gold-50 text-gold-700'
+                ]"
+              >
+                <Shield class="w-3 h-3" /> {{ roleLabel }}
               </span>
             </div>
           </div>
-          <div class="grid sm:grid-cols-2 gap-4 pt-4 border-t border-brand-100">
+          <div v-else class="rounded-xl border border-dashed border-brand-200 bg-brand-50/40 p-5">
+            <p class="text-sm font-medium text-brand-700">You are browsing as a guest</p>
+            <p class="text-sm text-brand-400 mt-1">
+              <RouterLink to="/login" class="font-semibold text-brand-600 hover:text-brand-700">Sign in</RouterLink>
+              to personalize your library.
+            </p>
+          </div>
+          <div v-if="user" class="grid sm:grid-cols-2 gap-4 pt-4 border-t border-brand-100">
             <div>
               <label class="text-xs font-semibold uppercase tracking-wider text-brand-400">Display Name</label>
-              <input type="text" value="Alexandra Richter" class="mt-1.5 w-full px-3 py-2.5 bg-brand-50 border border-brand-100 rounded-lg text-sm outline-none focus:border-brand-300" />
+              <input type="text" :value="displayName" readonly class="mt-1.5 w-full px-3 py-2.5 bg-brand-50 border border-brand-100 rounded-lg text-sm outline-none focus:border-brand-300" />
             </div>
             <div>
               <label class="text-xs font-semibold uppercase tracking-wider text-brand-400">Email</label>
-              <input type="email" value="alexandra.richter@email.com" class="mt-1.5 w-full px-3 py-2.5 bg-brand-50 border border-brand-100 rounded-lg text-sm outline-none focus:border-brand-300" />
+              <input type="email" :value="user.email" readonly class="mt-1.5 w-full px-3 py-2.5 bg-brand-50 border border-brand-100 rounded-lg text-sm outline-none focus:border-brand-300" />
+            </div>
+            <div>
+              <label class="text-xs font-semibold uppercase tracking-wider text-brand-400">Role</label>
+              <input type="text" :value="role" readonly class="mt-1.5 w-full px-3 py-2.5 bg-brand-50 border border-brand-100 rounded-lg text-sm outline-none focus:border-brand-300" />
             </div>
           </div>
         </div>

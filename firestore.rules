@@ -10,6 +10,11 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
+    function isAdmin() {
+      return isSignedIn()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
     // User profiles: each user can only access their own document.
     match /users/{userId} {
       allow get, list: if isOwner(userId);
@@ -24,6 +29,27 @@ service cloud.firestore {
         && request.resource.data.role == resource.data.role;
 
       allow delete: if false;
+    }
+
+    // Library content: publicly readable, only admins can modify.
+    match /sheetMusic/{itemId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /videos/{itemId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /collections/{itemId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /people/{itemId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
 
     // Everything else is locked down by default.

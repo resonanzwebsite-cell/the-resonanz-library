@@ -64,14 +64,7 @@ router.beforeEach(async (to) => {
 
   document.title = `${to.meta.title ?? 'Library'} — The Resonanz Library`
 
-  if (to.meta.public) {
-    if (auth.isAuthenticated) return { name: 'dashboard' }
-    return true
-  }
-
-  if (!auth.isAuthenticated) {
-    return { name: 'auth', query: { redirect: to.fullPath } }
-  }
+  if (to.name === 'auth' && auth.isAuthenticated) return { name: 'dashboard' }
 
   return true
 })

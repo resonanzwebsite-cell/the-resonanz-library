@@ -8,7 +8,7 @@ import {
   signOut,
   updateProfile
 } from 'firebase/auth'
-import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
+import { doc, getDoc, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore'
 import { auth, db, googleProvider } from '@/firebase/config'
 
 const USERS_COLLECTION = 'users'
@@ -83,10 +83,12 @@ function messageFor(error) {
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null)
+  const profile = ref(null)
   const loading = ref(false)
   const error = ref('')
 
   let started = false
+  let profileUnsubscribe = null
   let resolveReady
   const ready = new Promise((resolve) => {
     resolveReady = resolve
@@ -109,12 +111,38 @@ export const useAuthStore = defineStore('auth', () => {
 
   const avatarUrl = computed(() => user.value?.photoURL || null)
 
+  const role = computed(() => profile.value?.role ?? 'guest')
+  const isAdmin = computed(() => role.value === 'admin')
+
+  function watchProfile(firebaseUser) {
+    if (profileUnsubscribe) {
+      profileUnsubscribe()
+      profileUnsubscribe = null
+    }
+
+    if (!firebaseUser) {
+      profile.value = null
+      return
+    }
+
+    profileUnsubscribe = onSnapshot(
+      doc(db, USERS_COLLECTION, firebaseUser.uid),
+      (snapshot) => {
+        profile.value = snapshot.exists() ? { id: snapshot.id, ...snapshot.data() } : null
+      },
+      (err) => {
+        console.error('Failed to load user profile:', err)
+      }
+    )
+  }
+
   function init() {
     if (started) return ready
     started = true
     onAuthStateChanged(auth, (firebaseUser) => {
       user.value = firebaseUser
       resolveReady()
+      watchProfile(firebaseUser)
 
       if (firebaseUser) {
         ensureUserDocument(firebaseUser).catch((err) => {
@@ -172,9 +200,12 @@ export const useAuthStore = defineStore('auth', () => {
 
   return {
     user,
+    profile,
     loading,
     error,
     isAuthenticated,
+    role,
+    isAdmin,
     displayName,
     initials,
     avatarUrl,

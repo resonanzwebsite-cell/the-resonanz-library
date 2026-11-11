@@ -4,7 +4,7 @@ import { RouterView, useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { 
   LayoutDashboard, FileMusic, Youtube, FolderOpen, Users, Settings, 
-  Menu, X, Music, Search, Bell, LogOut 
+  Menu, X, Music, Search, Bell, LogOut, LogIn 
 } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth'
 
@@ -18,7 +18,7 @@ const isAuthPage = computed(() => route.meta.public === true)
 
 async function handleLogout() {
   await authStore.logout()
-  router.push({ name: 'auth' })
+  router.push({ name: 'dashboard' })
 }
 
 const navigation = [
@@ -101,7 +101,7 @@ function isActive(href) {
 
       <!-- Bottom section -->
       <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-brand-100">
-        <div class="flex items-center gap-3 px-3 py-2">
+        <div v-if="user" class="flex items-center gap-3 px-3 py-2">
           <img
             v-if="avatarUrl"
             :src="avatarUrl"
@@ -117,7 +117,7 @@ function isActive(href) {
           </div>
           <div class="flex-1 min-w-0">
             <p class="text-sm font-medium text-brand-900 truncate">{{ displayName }}</p>
-            <p class="text-xs text-brand-400 truncate">{{ user?.email }}</p>
+            <p class="text-xs text-brand-400 truncate">{{ user.email }}</p>
           </div>
           <button
             class="rounded-lg p-2 text-brand-400 transition-colors hover:bg-brand-50 hover:text-brand-600"
@@ -128,6 +128,19 @@ function isActive(href) {
             <LogOut class="w-4 h-4" />
           </button>
         </div>
+        <RouterLink
+          v-else
+          to="/login"
+          class="flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-brand-50"
+        >
+          <span class="flex h-8 w-8 items-center justify-center rounded-full bg-brand-50 text-brand-500">
+            <LogIn class="h-4 w-4" />
+          </span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-sm font-medium text-brand-900">Guest visitor</span>
+            <span class="block text-xs text-brand-400 truncate">Sign in to save your library</span>
+          </span>
+        </RouterLink>
       </div>
     </aside>
 
@@ -160,6 +173,14 @@ function isActive(href) {
           </div>
 
           <div class="flex items-center gap-3">
+            <RouterLink
+              v-if="!user"
+              to="/login"
+              class="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-2 text-xs font-semibold text-white shadow-sm shadow-brand-600/20 transition-colors hover:bg-brand-700"
+            >
+              <LogIn class="w-4 h-4" />
+              Sign in
+            </RouterLink>
             <button class="relative rounded-lg p-2 text-brand-400 transition-colors hover:bg-brand-50 hover:text-brand-600" aria-label="Notifications">
               <Bell class="w-5 h-5" />
               <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-gold-500 ring-2 ring-white" />
